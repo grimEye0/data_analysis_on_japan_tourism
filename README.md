@@ -1,9 +1,11 @@
 Analysis on Tourism in Japan
 
 Overview
+
 This project analyzed trends in Japan from 2021 to 2023. The goal of this project is to gain insights of seasonal patterns and trends using SQL for Data Cleaning and Tableau for Data Visualization.
 
 Dataset Details
+
 Data obtained from Tokyo Tourism Data Catalog https://data.tourism.metro.tokyo.lg.jp/en/data/jittai-irekomi/
 
 Methodology
