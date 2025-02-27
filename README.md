@@ -1,4 +1,5 @@
 Analysis on Tourism in Japan 
+
 Overview
 This project analyzed trends in Japan from 2021 to 2023. 
 The goal of this project is to gain insights of seasonal patterns and trends
