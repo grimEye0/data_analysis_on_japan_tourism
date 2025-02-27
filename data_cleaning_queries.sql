@@ -1,243 +1,323 @@
-CREATE DATABASE jpn_tourism_db;
-
-DROP DATABASE jpn_tourism_db;
-
-USE jpn_tourism_db;
-
--- show tourists table
-SELECT * FROM tourists;
+describe jpn_tourism;
+-- consolidate tables
+CREATE TABLE jpn_tourism AS
+	SELECT * FROM japan_tourism.`2021-jpn-tourism`
+	UNION ALL
+	SELECT * FROM japan_tourism.`2022-jpn-tourism`
+	UNION ALL
+	SELECT * FROM japan_tourism.`2023-jpn-tourism`
+;
 
 -- rename column names
-ALTER TABLE tourists
-RENAME COLUMN `ï»¿AD` TO `year`,
-RENAME COLUMN `Tourist spot name` TO `tourist_spot_name`,
+ALTER TABLE jpn_tourism
+RENAME COLUMN `ï»¿AD` TO `year`, 
+RENAME COLUMN `Tourist spot name` TO `tourist_spot_name`, 
 RENAME COLUMN `Municipal code` TO `municipal_code`,
-RENAME COLUMN `Subcategory code` TO `subcategory_code`,
-RENAME COLUMN `Sub-subcategory code` TO `sub_subcategory_code`,
-RENAME COLUMN `Total number of visitors_January` TO `visitors_jan`,
-RENAME COLUMN `Total number of visitors_February` TO `visitors_feb`,
-RENAME COLUMN `Total number of visitors_March` TO `visitors_mar`,
-RENAME COLUMN `Total number of visitors_April` TO `visitors_apr`,
-RENAME COLUMN `Total number of visitors_May` TO `visitors_may`,
-RENAME COLUMN `Total number of visitors_June` TO `visitors_jun`,
-RENAME COLUMN `Total number of visitors_July` TO `visitors_jul`,
-RENAME COLUMN `Total number of visitors_August` TO `visitors_aug`,
-RENAME COLUMN `Total number of visitors_September` TO `visitors_sep`,
-RENAME COLUMN `Total number of visitors_October` TO `visitors_oct`,
-RENAME COLUMN `Total number of visitors_November` TO `visitors_nov`,
-RENAME COLUMN `Total number of visitors_December` TO `visitors_dec`,
-RENAME COLUMN `(Of which) Number of foreign visitors_January` TO `foreign_visitors_jan`,
-RENAME COLUMN `(Of which) Number of foreign visitors_February` TO `foreign_visitors_feb`,
-RENAME COLUMN `(Of which) Number of foreign visitors_March` TO `foreign_visitors_mar`,
-RENAME COLUMN `(Of which) Number of foreign visitors_April` TO `foreign_visitors_apr`,
-RENAME COLUMN `(Of which) Number of foreign visitors_May` TO `foreign_visitors_may`,
-RENAME COLUMN `(Of which) Number of foreign visitors_June` TO `foreign_visitors_jun`,
-RENAME COLUMN `(Of which) Number of foreign visitors_July` TO `foreign_visitors_jul`,
-RENAME COLUMN `(Of which) Number of foreign visitors_August` TO `foreign_visitors_aug`,
-RENAME COLUMN `(Of which) Number of foreign visitors_September` TO `foreign_visitors_sep`,
-RENAME COLUMN `(Of which) Number of foreign visitors_October` TO `foreign_visitors_oct`,
-RENAME COLUMN `(Of which) Number of foreign visitors_November` TO `foreign_visitors_nov`,
-RENAME COLUMN `(Of which) Number of foreign visitors_December` TO `foreign_visitors_dec`;
+RENAME COLUMN `Subcategory code` TO `subcategory_code`, 
+RENAME COLUMN `Sub-subcategory code` TO `sub_subcategory_code`, 
 
-ALTER TABLE tourists
+RENAME COLUMN `Total number of visitors_January` TO `total_num_of_visitors_january`, 
+RENAME COLUMN `Total number of visitors_February` TO `total_num_of_visitors_february`,
+RENAME COLUMN `Total number of visitors_March` TO `total_num_of_visitors_march`,
+RENAME COLUMN `Total number of visitors_April` TO `total_num_of_visitors_april`,
+RENAME COLUMN `Total number of visitors_May` TO `total_num_of_visitors_may`,
+RENAME COLUMN `Total number of visitors_June` TO `total_num_of_visitors_june`,
+RENAME COLUMN `Total number of visitors_July` TO `total_num_of_visitors_july`,
+RENAME COLUMN `Total number of visitors_August` TO `total_num_of_visitors_august`,
+RENAME COLUMN `Total number of visitors_September` TO `total_num_of_visitors_september`,
+RENAME COLUMN `Total number of visitors_October` TO `total_num_of_visitors_october`,
+RENAME COLUMN `Total number of visitors_November` TO `total_num_of_visitors_november`,
+RENAME COLUMN `Total number of visitors_December` TO `total_num_of_visitors_december`,
+
+RENAME COLUMN `(Of which) Number of foreign visitors_January` TO `total_num_of_foreign_visitors_january`,
+RENAME COLUMN `(Of which) Number of foreign visitors_February` TO `total_num_of_foreign_visitors_february`,
+RENAME COLUMN `(Of which) Number of foreign visitors_March` TO `total_num_of_foreign_visitors_march`,
+RENAME COLUMN `(Of which) Number of foreign visitors_April` TO `total_num_of_foreign_visitors_april`,
+RENAME COLUMN `(Of which) Number of foreign visitors_May` TO `total_num_of_foreign_visitors_may`,
+RENAME COLUMN `(Of which) Number of foreign visitors_June` TO `total_num_of_foreign_visitors_june`,
+RENAME COLUMN `(Of which) Number of foreign visitors_July` TO `total_num_of_foreign_visitors_july`,
+RENAME COLUMN `(Of which) Number of foreign visitors_August` TO `total_num_of_foreign_visitors_august`,
+RENAME COLUMN `(Of which) Number of foreign visitors_September` TO `total_num_of_foreign_visitors_september`,
+RENAME COLUMN `(Of which) Number of foreign visitors_October` TO `total_num_of_foreign_visitors_october`,
+RENAME COLUMN `(Of which) Number of foreign visitors_November` TO `total_num_of_foreign_visitors_november`,
+RENAME COLUMN `(Of which) Number of foreign visitors_December` TO `total_num_of_foreign_visitors_december`;
+
+-- drop empty columns, validate first if columns are empty
+SELECT DISTINCT tourist_spot_name
+FROM jpn_tourism;
+
+SELECT DISTINCT municipal_code
+FROM jpn_tourism;
+
+-- drop columns
+ALTER TABLE jpn_tourism
 DROP COLUMN tourist_spot_name,
 DROP COLUMN municipal_code;
 
+-- check if columns are removed
+DESCRIBE jpn_tourism;
 
--- show category table
-SELECT * FROM category;
+-- handle missing values (nulls and empty strings)
+-- check if there are null values
+SELECT COUNT(*) 
+FROM jpn_tourism
+WHERE 
+	year IS NULL OR year = '' OR
+    subcategory_code IS NULL OR subcategory_code = '' OR
+    sub_subcategory_code IS NULL OR sub_subcategory_code = '' OR
+    total_num_of_visitors_january IS NULL OR total_num_of_visitors_january = '' OR
+    total_num_of_visitors_february IS NULL OR total_num_of_visitors_february = '' OR
+    total_num_of_visitors_march IS NULL OR total_num_of_visitors_march = '' OR
+    total_num_of_visitors_april IS NULL OR total_num_of_visitors_april = '' OR
+    total_num_of_visitors_may IS NULL OR total_num_of_visitors_may = '' OR
+    total_num_of_visitors_june IS NULL OR total_num_of_visitors_june = '' OR
+    total_num_of_visitors_july IS NULL OR total_num_of_visitors_july = '' OR
+    total_num_of_visitors_august IS NULL OR total_num_of_visitors_august = '' OR
+    total_num_of_visitors_september IS NULL OR total_num_of_visitors_september = '' OR
+    total_num_of_visitors_october IS NULL OR total_num_of_visitors_october = '' OR
+    total_num_of_visitors_november IS NULL OR total_num_of_visitors_november = '' OR
+    total_num_of_visitors_december IS NULL OR total_num_of_visitors_december = '' OR
+    total_num_of_foreign_visitors_january IS NULL OR total_num_of_foreign_visitors_january = '' OR
+    total_num_of_foreign_visitors_february IS NULL OR total_num_of_foreign_visitors_february = '' OR
+    total_num_of_foreign_visitors_march IS NULL OR total_num_of_foreign_visitors_march = '' OR
+    total_num_of_foreign_visitors_april IS NULL OR total_num_of_foreign_visitors_april = '' OR
+    total_num_of_foreign_visitors_may IS NULL OR total_num_of_foreign_visitors_may = '' OR
+    total_num_of_foreign_visitors_june IS NULL OR total_num_of_foreign_visitors_june = '' OR
+    total_num_of_foreign_visitors_july IS NULL OR total_num_of_foreign_visitors_july = '' OR
+    total_num_of_foreign_visitors_august IS NULL OR total_num_of_foreign_visitors_august = '' OR
+    total_num_of_foreign_visitors_september IS NULL OR total_num_of_foreign_visitors_september = '' OR
+    total_num_of_foreign_visitors_october IS NULL OR total_num_of_foreign_visitors_october = '' OR
+    total_num_of_foreign_visitors_november IS NULL OR total_num_of_foreign_visitors_november = '' OR
+    total_num_of_foreign_visitors_december IS NULL OR total_num_of_foreign_visitors_december = '';
 
+-- replace null and empty string with 0
+UPDATE jpn_tourism
+SET 
+    year = COALESCE(NULLIF(year, ''), 0),
+    subcategory_code = COALESCE(NULLIF(subcategory_code, ''), 0),
+    sub_subcategory_code = COALESCE(NULLIF(sub_subcategory_code, ''), 0),
+    total_num_of_visitors_january = COALESCE(NULLIF(total_num_of_visitors_january, ''), 0),
+    total_num_of_visitors_february = COALESCE(NULLIF(total_num_of_visitors_february, ''), 0),
+    total_num_of_visitors_march = COALESCE(NULLIF(total_num_of_visitors_march, ''), 0),
+    total_num_of_visitors_april = COALESCE(NULLIF(total_num_of_visitors_april, ''), 0),
+    total_num_of_visitors_may = COALESCE(NULLIF(total_num_of_visitors_may, ''), 0),
+    total_num_of_visitors_june = COALESCE(NULLIF(total_num_of_visitors_june, ''), 0),
+    total_num_of_visitors_july = COALESCE(NULLIF(total_num_of_visitors_july, ''), 0),
+    total_num_of_visitors_august = COALESCE(NULLIF(total_num_of_visitors_august, ''), 0),
+    total_num_of_visitors_september = COALESCE(NULLIF(total_num_of_visitors_september, ''), 0),
+    total_num_of_visitors_october = COALESCE(NULLIF(total_num_of_visitors_october, ''), 0),
+    total_num_of_visitors_november = COALESCE(NULLIF(total_num_of_visitors_november, ''), 0),
+    total_num_of_visitors_december = COALESCE(NULLIF(total_num_of_visitors_december, ''), 0),
+    total_num_of_foreign_visitors_january = COALESCE(NULLIF(total_num_of_foreign_visitors_january, ''), 0),
+    total_num_of_foreign_visitors_february = COALESCE(NULLIF(total_num_of_foreign_visitors_february, ''), 0),
+    total_num_of_foreign_visitors_march = COALESCE(NULLIF(total_num_of_foreign_visitors_march, ''), 0),
+    total_num_of_foreign_visitors_april = COALESCE(NULLIF(total_num_of_foreign_visitors_april, ''), 0),
+    total_num_of_foreign_visitors_may = COALESCE(NULLIF(total_num_of_foreign_visitors_may, ''), 0),
+    total_num_of_foreign_visitors_june = COALESCE(NULLIF(total_num_of_foreign_visitors_june, ''), 0),
+    total_num_of_foreign_visitors_july = COALESCE(NULLIF(total_num_of_foreign_visitors_july, ''), 0),
+    total_num_of_foreign_visitors_august = COALESCE(NULLIF(total_num_of_foreign_visitors_august, ''), 0),
+    total_num_of_foreign_visitors_september = COALESCE(NULLIF(total_num_of_foreign_visitors_september, ''), 0),
+    total_num_of_foreign_visitors_october = COALESCE(NULLIF(total_num_of_foreign_visitors_october, ''), 0),
+    total_num_of_foreign_visitors_november = COALESCE(NULLIF(total_num_of_foreign_visitors_november, ''), 0),
+    total_num_of_foreign_visitors_december = COALESCE(NULLIF(total_num_of_foreign_visitors_december, ''), 0);
+
+-- change data types to INT
+-- since there are decimal values, round values first
+UPDATE jpn_tourism
+SET 
+    total_num_of_visitors_january = ROUND(total_num_of_visitors_january),
+    total_num_of_visitors_february = ROUND(total_num_of_visitors_february),
+    total_num_of_visitors_march = ROUND(total_num_of_visitors_march),
+    total_num_of_visitors_april = ROUND(total_num_of_visitors_april),
+    total_num_of_visitors_may = ROUND(total_num_of_visitors_may),
+    total_num_of_visitors_june = ROUND(total_num_of_visitors_june),
+    total_num_of_visitors_july = ROUND(total_num_of_visitors_july),
+    total_num_of_visitors_august = ROUND(total_num_of_visitors_august),
+    total_num_of_visitors_september = ROUND(total_num_of_visitors_september),
+    total_num_of_visitors_october = ROUND(total_num_of_visitors_october),
+    total_num_of_visitors_november = ROUND(total_num_of_visitors_november),
+    total_num_of_visitors_december = ROUND(total_num_of_visitors_december),
+    total_num_of_foreign_visitors_january = ROUND(total_num_of_foreign_visitors_january),
+    total_num_of_foreign_visitors_february = ROUND(total_num_of_foreign_visitors_february),
+    total_num_of_foreign_visitors_march = ROUND(total_num_of_foreign_visitors_march),
+    total_num_of_foreign_visitors_april = ROUND(total_num_of_foreign_visitors_april),
+    total_num_of_foreign_visitors_may = ROUND(total_num_of_foreign_visitors_may),
+    total_num_of_foreign_visitors_june = ROUND(total_num_of_foreign_visitors_june),
+    total_num_of_foreign_visitors_july = ROUND(total_num_of_foreign_visitors_july),
+    total_num_of_foreign_visitors_august = ROUND(total_num_of_foreign_visitors_august),
+    total_num_of_foreign_visitors_september = ROUND(total_num_of_foreign_visitors_september),
+    total_num_of_foreign_visitors_october = ROUND(total_num_of_foreign_visitors_october),
+    total_num_of_foreign_visitors_november = ROUND(total_num_of_foreign_visitors_november),
+    total_num_of_foreign_visitors_december = ROUND(total_num_of_foreign_visitors_december);
+
+-- after values are rounded, convert to INT
+ALTER TABLE jpn_tourism
+MODIFY COLUMN total_num_of_visitors_january INT,
+MODIFY COLUMN total_num_of_visitors_february INT,
+MODIFY COLUMN total_num_of_visitors_march INT,
+MODIFY COLUMN total_num_of_visitors_april INT,
+MODIFY COLUMN total_num_of_visitors_may INT,
+MODIFY COLUMN total_num_of_visitors_june INT,
+MODIFY COLUMN total_num_of_visitors_july INT,
+MODIFY COLUMN total_num_of_visitors_august INT,
+MODIFY COLUMN total_num_of_visitors_september INT,
+MODIFY COLUMN total_num_of_visitors_october INT,
+MODIFY COLUMN total_num_of_visitors_november INT,
+MODIFY COLUMN total_num_of_visitors_december INT,
+MODIFY COLUMN total_num_of_foreign_visitors_january INT,
+MODIFY COLUMN total_num_of_foreign_visitors_february INT,
+MODIFY COLUMN total_num_of_foreign_visitors_march INT,
+MODIFY COLUMN total_num_of_foreign_visitors_april INT,
+MODIFY COLUMN total_num_of_foreign_visitors_may INT,
+MODIFY COLUMN total_num_of_foreign_visitors_june INT,
+MODIFY COLUMN total_num_of_foreign_visitors_july INT,
+MODIFY COLUMN total_num_of_foreign_visitors_august INT,
+MODIFY COLUMN total_num_of_foreign_visitors_september INT,
+MODIFY COLUMN total_num_of_foreign_visitors_october INT,
+MODIFY COLUMN total_num_of_foreign_visitors_november INT,
+MODIFY COLUMN total_num_of_foreign_visitors_december INT;
+
+-- handle duplicates, check for duplicates
+SELECT COUNT(*) FROM jpn_tourism; -- num of all rows
+
+-- check num of duplicate rows
+SELECT COUNT(*) AS num_of_duplicates
+FROM (
+    SELECT COUNT(*) 
+    FROM jpn_tourism
+    GROUP BY year, subcategory_code, sub_subcategory_code, 
+             total_num_of_visitors_january, total_num_of_visitors_february, 
+             total_num_of_visitors_march, total_num_of_visitors_april, 
+             total_num_of_visitors_may, total_num_of_visitors_june, 
+             total_num_of_visitors_july, total_num_of_visitors_august, 
+             total_num_of_visitors_september, total_num_of_visitors_october, 
+             total_num_of_visitors_november, total_num_of_visitors_december, 
+             total_num_of_foreign_visitors_january, total_num_of_foreign_visitors_february, 
+             total_num_of_foreign_visitors_march, total_num_of_foreign_visitors_april, 
+             total_num_of_foreign_visitors_may, total_num_of_foreign_visitors_june, 
+             total_num_of_foreign_visitors_july, total_num_of_foreign_visitors_august, 
+             total_num_of_foreign_visitors_september, total_num_of_foreign_visitors_october, 
+             total_num_of_foreign_visitors_november, total_num_of_foreign_visitors_december
+    HAVING COUNT(*) > 1
+) AS duplicates;
+
+-- remove duplicates
+CREATE TABLE jpn_tourism_clean AS
+SELECT DISTINCT * FROM jpn_tourism;
+
+DROP TABLE jpn_tourism;
+ALTER TABLE jpn_tourism_clean RENAME TO jpn_tourism;
+
+-- combine data with events and categories table
+-- combine categories and tourism data
+
+-- remove unnecessary columns
 ALTER TABLE category
-RENAME COLUMN `ï»¿Subcategory code` TO `subcategory_code`,
-RENAME COLUMN `Sub-subcategory code` TO `sub_subcategory_code`,
-RENAME COLUMN `Subcategory` TO `subcategory`,
-RENAME COLUMN `Sub-subcategory` TO `sub_subcategory`;
-
-ALTER TABLE category
-DROP COLUMN `MyUnknownColumn`,
+DROP COLUMN MyUnknownColumn,
 DROP COLUMN `MyUnknownColumn_[0]`;
 
--- check for null values
-SELECT COUNT(*) AS num_of_nulls
-FROM tourists
-WHERE
-visitors_jan = "" OR visitors_jan IS NULL OR
-visitors_feb = "" OR visitors_feb IS NULL OR
-visitors_mar = "" OR visitors_mar IS NULL OR
-visitors_apr = "" OR visitors_apr IS NULL OR
-visitors_may = "" OR visitors_may IS NULL OR
-visitors_jun = "" OR visitors_jun IS NULL OR
-visitors_jul = "" OR visitors_jul IS NULL OR
-visitors_aug = "" OR visitors_aug IS NULL OR
-visitors_sep = "" OR visitors_sep IS NULL OR
-visitors_oct = "" OR visitors_oct IS NULL OR
-visitors_nov = "" OR visitors_nov IS NULL OR
-visitors_dec = "" OR visitors_dec IS NULL;
+-- modify column names to match column names with other tables
+ALTER TABLE category
+RENAME COLUMN `ï»¿Subcategory code` TO subcategory_code,
+RENAME COLUMN `Sub-subcategory code` TO sub_subcategory_code,
+RENAME COLUMN `Subcategory` TO subcategory, 
+RENAME COLUMN `Sub-subcategory` TO sub_subcategory;
 
--- check columns with empty strings
-SELECT COUNT(*) 
-FROM tourists
-WHERE 
-    visitors_jan = "" OR
-    visitors_feb = "" OR
-    visitors_mar = "" OR
-    visitors_apr = "" OR
-    visitors_may = "" OR
-    visitors_jun = "" OR
-    visitors_jul = "" OR
-    visitors_aug = "" OR
-    visitors_sep = "" OR
-    visitors_oct = "" OR
-    visitors_nov = "" OR
-    visitors_dec = "";
-    
--- check for duplicates
-SELECT COUNT(*) FROM tourists;
-SELECT DISTINCT COUNT(*) FROM tourists; -- comparing COUNT(*) and DISTINCT COUNT(*) shows there are no duplicate values
-SELECT DISTINCT * FROM tourists;
-
-SELECT * FROM tourists;
-
--- replacing nulls
-UPDATE tourists
-SET 
-	visitors_jan = COALESCE(visitors_jan, 0),
-    visitors_feb = COALESCE(visitors_feb, 0),
-    visitors_mar = COALESCE(visitors_mar, 0),
-    visitors_apr = COALESCE(visitors_apr, 0),
-    visitors_may = COALESCE(visitors_may, 0),
-    visitors_jun = COALESCE(visitors_jun, 0),
-    visitors_jul = COALESCE(visitors_jul, 0),
-    visitors_aug = COALESCE(visitors_aug, 0),
-    visitors_sep = COALESCE(visitors_sep, 0),
-    visitors_oct = COALESCE(visitors_oct, 0),
-    visitors_nov = COALESCE(visitors_nov, 0),
-    visitors_dec = COALESCE(visitors_dec, 0),
-    foreign_visitors_jan = COALESCE(foreign_visitors_jan, 0),
-    foreign_visitors_feb = COALESCE(foreign_visitors_feb, 0),
-    foreign_visitors_mar = COALESCE(foreign_visitors_mar, 0),
-    foreign_visitors_apr = COALESCE(foreign_visitors_apr, 0),
-    foreign_visitors_may = COALESCE(foreign_visitors_may, 0),
-    foreign_visitors_jun = COALESCE(foreign_visitors_jun, 0),
-    foreign_visitors_jul = COALESCE(foreign_visitors_jul, 0),
-    foreign_visitors_aug = COALESCE(foreign_visitors_aug, 0),
-    foreign_visitors_sep = COALESCE(foreign_visitors_sep, 0),
-    foreign_visitors_oct = COALESCE(foreign_visitors_oct, 0),
-    foreign_visitors_nov = COALESCE(foreign_visitors_nov, 0),
-    foreign_visitors_dec = COALESCE(foreign_visitors_dec, 0);
-    
--- replace empty strings with 0
-UPDATE tourists 
-SET 
-    visitors_jan = CASE WHEN visitors_jan = "" THEN 0 ELSE visitors_jan END,
-    visitors_feb = CASE WHEN visitors_feb = "" THEN 0 ELSE visitors_feb END,
-    visitors_mar = CASE WHEN visitors_mar = "" THEN 0 ELSE visitors_mar END,
-    visitors_apr = CASE WHEN visitors_apr = "" THEN 0 ELSE visitors_apr END,
-    visitors_may = CASE WHEN visitors_may = "" THEN 0 ELSE visitors_may END,
-    visitors_jun = CASE WHEN visitors_jun = "" THEN 0 ELSE visitors_jun END,
-    visitors_jul = CASE WHEN visitors_jul = "" THEN 0 ELSE visitors_jul END,
-    visitors_aug = CASE WHEN visitors_aug = "" THEN 0 ELSE visitors_aug END,
-    visitors_sep = CASE WHEN visitors_sep = "" THEN 0 ELSE visitors_sep END,
-    visitors_oct = CASE WHEN visitors_oct = "" THEN 0 ELSE visitors_oct END,
-    visitors_nov = CASE WHEN visitors_nov = "" THEN 0 ELSE visitors_nov END,
-    visitors_dec = CASE WHEN visitors_dec = "" THEN 0 ELSE visitors_dec END,
-    foreign_visitors_jan = CASE WHEN foreign_visitors_jan = "" THEN 0 ELSE foreign_visitors_jan END,
-    foreign_visitors_feb = CASE WHEN foreign_visitors_feb = "" THEN 0 ELSE foreign_visitors_feb END,
-    foreign_visitors_mar = CASE WHEN foreign_visitors_mar = "" THEN 0 ELSE foreign_visitors_mar END,
-    foreign_visitors_apr = CASE WHEN foreign_visitors_apr = "" THEN 0 ELSE foreign_visitors_apr END,
-    foreign_visitors_may = CASE WHEN foreign_visitors_may = "" THEN 0 ELSE foreign_visitors_may END,
-    foreign_visitors_jun = CASE WHEN foreign_visitors_jun = "" THEN 0 ELSE foreign_visitors_jun END,
-    foreign_visitors_jul = CASE WHEN foreign_visitors_jul = "" THEN 0 ELSE foreign_visitors_jul END,
-    foreign_visitors_aug = CASE WHEN foreign_visitors_aug = "" THEN 0 ELSE foreign_visitors_aug END,
-    foreign_visitors_sep = CASE WHEN foreign_visitors_sep = "" THEN 0 ELSE foreign_visitors_sep END,
-    foreign_visitors_oct = CASE WHEN foreign_visitors_oct = "" THEN 0 ELSE foreign_visitors_oct END,
-    foreign_visitors_nov = CASE WHEN foreign_visitors_nov = "" THEN 0 ELSE foreign_visitors_nov END,
-    foreign_visitors_dec = CASE WHEN foreign_visitors_dec = "" THEN 0 ELSE foreign_visitors_dec END;
-
--- convert datatypes to int
-ALTER TABLE tourists
-MODIFY COLUMN visitors_jan INT,
-MODIFY COLUMN visitors_feb INT,
-MODIFY COLUMN visitors_mar INT,
-MODIFY COLUMN visitors_apr INT,
-MODIFY COLUMN visitors_may INT,
-MODIFY COLUMN visitors_jun INT,
-MODIFY COLUMN visitors_jul INT,
-MODIFY COLUMN visitors_aug INT,
-MODIFY COLUMN visitors_sep INT,
-MODIFY COLUMN visitors_oct INT,
-MODIFY COLUMN visitors_nov INT,
-MODIFY COLUMN visitors_dec INT,
-MODIFY COLUMN foreign_visitors_jan INT, 
-MODIFY COLUMN foreign_visitors_feb INT,
-MODIFY COLUMN foreign_visitors_mar INT,
-MODIFY COLUMN foreign_visitors_apr INT,
-MODIFY COLUMN foreign_visitors_may INT,
-MODIFY COLUMN foreign_visitors_jun INT,
-MODIFY COLUMN foreign_visitors_jul INT,
-MODIFY COLUMN foreign_visitors_aug INT,
-MODIFY COLUMN foreign_visitors_sep INT,
-MODIFY COLUMN foreign_visitors_oct INT,
-MODIFY COLUMN foreign_visitors_nov INT,
-MODIFY COLUMN foreign_visitors_dec INT;
-
+-- create new joined table
+CREATE TABLE tourism_data AS 
 SELECT 
-    REPLACE(REPLACE(visitors_jan, ',', ''), ' ', '') AS visitors_jan,
-    REPLACE(REPLACE(visitors_feb, ',', ''), ' ', '') AS visitors_feb,
-    REPLACE(REPLACE(visitors_mar, ',', ''), ' ', '') AS visitors_mar,
-    REPLACE(REPLACE(visitors_apr, ',', ''), ' ', '') AS visitors_apr,
-    REPLACE(REPLACE(visitors_may, ',', ''), ' ', '') AS visitors_may,
-    REPLACE(REPLACE(visitors_jun, ',', ''), ' ', '') AS visitors_jun,
-    REPLACE(REPLACE(visitors_jul, ',', ''), ' ', '') AS visitors_jul,
-    REPLACE(REPLACE(visitors_aug, ',', ''), ' ', '') AS visitors_aug,
-    REPLACE(REPLACE(visitors_sep, ',', ''), ' ', '') AS visitors_sep,
-    REPLACE(REPLACE(visitors_oct, ',', ''), ' ', '') AS visitors_oct,
-    REPLACE(REPLACE(visitors_nov, ',', ''), ' ', '') AS visitors_nov,
-    REPLACE(REPLACE(visitors_dec, ',', ''), ' ', '') AS visitors_dec,
-    REPLACE(REPLACE(foreign_visitors_jan, ',', ''), ' ', '') AS foreign_visitors_jan,
-    REPLACE(REPLACE(foreign_visitors_feb, ',', ''), ' ', '') AS foreign_visitors_feb,
-    REPLACE(REPLACE(foreign_visitors_mar, ',', ''), ' ', '') AS foreign_visitors_mar,
-    REPLACE(REPLACE(foreign_visitors_apr, ',', ''), ' ', '') AS foreign_visitors_apr,
-    REPLACE(REPLACE(foreign_visitors_may, ',', ''), ' ', '') AS foreign_visitors_may,
-    REPLACE(REPLACE(foreign_visitors_jun, ',', ''), ' ', '') AS foreign_visitors_jun,
-    REPLACE(REPLACE(foreign_visitors_jul, ',', ''), ' ', '') AS foreign_visitors_jul,
-    REPLACE(REPLACE(foreign_visitors_aug, ',', ''), ' ', '') AS foreign_visitors_aug,
-    REPLACE(REPLACE(foreign_visitors_sep, ',', ''), ' ', '') AS foreign_visitors_sep,
-    REPLACE(REPLACE(foreign_visitors_oct, ',', ''), ' ', '') AS foreign_visitors_oct,
-    REPLACE(REPLACE(foreign_visitors_nov, ',', ''), ' ', '') AS foreign_visitors_nov,
-    REPLACE(REPLACE(foreign_visitors_dec, ',', ''), ' ', '') AS foreign_visitors_dec
-FROM tourists;
+    jt.*,  -- Select all columns from jpn_tourism
+    c.subcategory AS category_subcategory,  -- Rename to avoid duplication
+    c.sub_subcategory AS category_sub_subcategory  -- Rename to avoid duplication
+FROM jpn_tourism jt
+JOIN category c  
+ON jt.subcategory_code = c.subcategory_code  
+AND jt.sub_subcategory_code = c.sub_subcategory_code;
 
--- update values in database
-UPDATE tourists
-SET
-	visitors_jan = REPLACE(REPLACE(visitors_jan, ',', ''), ' ', ''),
-    visitors_feb = REPLACE(REPLACE(visitors_feb, ',', ''), ' ', ''),
-    visitors_mar = REPLACE(REPLACE(visitors_mar, ',', ''), ' ', ''),
-    visitors_apr = REPLACE(REPLACE(visitors_apr, ',', ''), ' ', ''),
-    visitors_may = REPLACE(REPLACE(visitors_may, ',', ''), ' ', ''),
-    visitors_jun = REPLACE(REPLACE(visitors_jun, ',', ''), ' ', ''),
-    visitors_jul = REPLACE(REPLACE(visitors_jul, ',', ''), ' ', ''),
-    visitors_aug = REPLACE(REPLACE(visitors_aug, ',', ''), ' ', ''),
-    visitors_sep = REPLACE(REPLACE(visitors_sep, ',', ''), ' ', ''),
-    visitors_oct = REPLACE(REPLACE(visitors_oct, ',', ''), ' ', ''),
-    visitors_nov = REPLACE(REPLACE(visitors_nov, ',', ''), ' ', ''),
-    visitors_dec = REPLACE(REPLACE(visitors_dec, ',', ''), ' ', ''),
-    foreign_visitors_jan = REPLACE(REPLACE(foreign_visitors_jan, ',', ''), ' ', ''),
-    foreign_visitors_feb = REPLACE(REPLACE(foreign_visitors_feb, ',', ''), ' ', ''),
-    foreign_visitors_mar = REPLACE(REPLACE(foreign_visitors_mar, ',', ''), ' ', ''),
-    foreign_visitors_apr = REPLACE(REPLACE(foreign_visitors_apr, ',', ''), ' ', ''),
-    foreign_visitors_may = REPLACE(REPLACE(foreign_visitors_may, ',', ''), ' ', ''),
-    foreign_visitors_jun = REPLACE(REPLACE(foreign_visitors_jun, ',', ''), ' ', ''),
-    foreign_visitors_jul = REPLACE(REPLACE(foreign_visitors_jul, ',', ''), ' ', ''),
-    foreign_visitors_aug = REPLACE(REPLACE(foreign_visitors_aug, ',', ''), ' ', ''),
-    foreign_visitors_sep = REPLACE(REPLACE(foreign_visitors_sep, ',', ''), ' ', ''),
-    foreign_visitors_oct = REPLACE(REPLACE(foreign_visitors_oct, ',', ''), ' ', ''),
-    foreign_visitors_nov = REPLACE(REPLACE(foreign_visitors_nov, ',', ''), ' ', ''),
-    foreign_visitors_dec = REPLACE(REPLACE(foreign_visitors_dec, ',', ''), ' ', '');
+select * from tourism_data;
 
--- export to csv
-SELECT * FROM tourists; -- run then click export in result grid
+-- alter table for events table
+ALTER TABLE `events-2021`
+RENAME COLUMN `ï»¿Sub-subcategory code` TO subcategory_code;
 
+ALTER TABLE `events-2022-2023`
+RENAME COLUMN `ï»¿Sub-subcategory code` TO subcategory_code;
+
+-- combine table tourism_data with events table, table for 2021 and 2022-2023 are different
+-- for 2021
+CREATE TABLE tourism_data_2021 AS
+SELECT t.*, e.events
+FROM tourism_data t
+JOIN `events-2021` e 
+ON t.subcategory_code = e.subcategory_code
+WHERE t.year = 2021;
+
+-- for 2022-2023
+CREATE TABLE tourism_data_2022_2023 AS
+SELECT t.*, e2.events
+FROM tourism_data t
+JOIN `events-2022-2023` e2 
+ON t.subcategory_code = e2.subcategory_code
+WHERE t.year = 2022 OR t.year = 2023;
+
+-- temp table for consolidated tables
+CREATE TABLE jpn_tourism_v2 AS
+	SELECT * FROM japan_tourism.tourism_data_2021
+	UNION ALL
+	SELECT * FROM japan_tourism.tourism_data_2022_2023
+;
+
+SELECT * FROM jpn_tourism_v2;
+
+-- add month column -- then export
+SELECT 
+    year, 
+    subcategory_code, 
+    sub_subcategory_code, 
+    month_names.month,
+    category_subcategory,
+    category_sub_subcategory,
+    events,
+    CASE month_names.month 
+        WHEN 'January' THEN total_num_of_visitors_january
+        WHEN 'February' THEN total_num_of_visitors_february
+        WHEN 'March' THEN total_num_of_visitors_march
+        WHEN 'April' THEN total_num_of_visitors_april
+        WHEN 'May' THEN total_num_of_visitors_may
+        WHEN 'June' THEN total_num_of_visitors_june
+        WHEN 'July' THEN total_num_of_visitors_july
+        WHEN 'August' THEN total_num_of_visitors_august
+        WHEN 'September' THEN total_num_of_visitors_september
+        WHEN 'October' THEN total_num_of_visitors_october
+        WHEN 'November' THEN total_num_of_visitors_november
+        WHEN 'December' THEN total_num_of_visitors_december
+    END AS total_visitors,
+    CASE month_names.month 
+        WHEN 'January' THEN total_num_of_foreign_visitors_january
+        WHEN 'February' THEN total_num_of_foreign_visitors_february
+        WHEN 'March' THEN total_num_of_foreign_visitors_march
+        WHEN 'April' THEN total_num_of_foreign_visitors_april
+        WHEN 'May' THEN total_num_of_foreign_visitors_may
+        WHEN 'June' THEN total_num_of_foreign_visitors_june
+        WHEN 'July' THEN total_num_of_foreign_visitors_july
+        WHEN 'August' THEN total_num_of_foreign_visitors_august
+        WHEN 'September' THEN total_num_of_foreign_visitors_september
+        WHEN 'October' THEN total_num_of_foreign_visitors_october
+        WHEN 'November' THEN total_num_of_foreign_visitors_november
+        WHEN 'December' THEN total_num_of_foreign_visitors_december
+    END AS foreign_visitors
+FROM jpn_tourism_v2
+CROSS JOIN (
+    SELECT 'January' AS month UNION ALL SELECT 'February' UNION ALL SELECT 'March'
+    UNION ALL SELECT 'April' UNION ALL SELECT 'May' UNION ALL SELECT 'June'
+    UNION ALL SELECT 'July' UNION ALL SELECT 'August' UNION ALL SELECT 'September'
+    UNION ALL SELECT 'October' UNION ALL SELECT 'November' UNION ALL SELECT 'December'
+) AS month_names;
+
+-- show all tables
+SELECT *
+FROM jpn_tourism;
+
+-- enable/disable update mode
 SET SQL_SAFE_UPDATES = 0;
 SET SQL_SAFE_UPDATES =  1;
