@@ -27,4 +27,4 @@ Insights and Findings
 3. Foreign visitor numbers are relatively low during the first three months of the year, suggesting a slower start to international tourism.
 
 Tableau Dashboard
-https://public.tableau.com/shared/Y3BBM2MXS?:display_count=n&:origin=viz_share_link
+https://public.tableau.com/views/AnalysisonJapanTourism/JapanTourism?:language=en-US&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
